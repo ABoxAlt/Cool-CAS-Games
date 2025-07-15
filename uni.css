@@ -1,7 +1,44 @@
+/*
+This is a CSS comment
+Cascading
+    Style
+        Sheets
+
+As im sure you've read in the HTML doc CSS works based on a hirearchy
+
+elements overule the default settings of a site
+classes overule elements and the default settings of a site
+ids overule everything and are at the top of the hirearchy
+
+*/
+
+/*
+Sets the background color and general text color of the site
+color sets most elements to that color
+there is no specific text-color option
+*/
 body {
-    background-color: blue;
-    color: white;
+    background-color: rgb(21, 21, 68);
+    color: rgb(220, 224, 255);
 }
-a {
-    color:red
+
+/*
+Sets up the page title and tells it to remain centered on the page, no size so its just
+the default
+*/
+#pageTitle {
+    text-align: center;
+}
+
+/**/
+
+#titleSeparator {
+    width: 10%;
+}
+
+.gameLink {
+    text-align: center;
+}
+.gameLink a {
+    color: rgb(255, 20, 147);
 }
