@@ -30,12 +30,24 @@ the default
     text-align: center;
 }
 
-/**/
-
+/*
+width: 10%;
+this tells the computer that this elements width should be 10% that of the width of the container
+in this case the container is the webpage itself
+the distinction is important because other containers exist such as <canvas> and <div>
+<div> separates elements into its own container
+and <canvas> lets you draw and do a bunch of stuff to it in javascript
+*/
 #titleSeparator {
     width: 10%;
 }
 
+/*
+Theoretically we can put all the css of the webpage in one document but that gets messy and 
+confusing
+
+The rest of this doc is the same old stuff I allready discussed
+*/
 .gameLink {
     text-align: center;
 }

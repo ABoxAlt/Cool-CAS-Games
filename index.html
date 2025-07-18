@@ -1,22 +1,68 @@
+<!--This is a comment the arrows on each side denote where it begins and ends
+It can even be several lines!-->
+
+<!--
+Tells the computer it's an html doc
+-->
 <!DOCTYPE html>
 <html lang="en">
+
+<!--
+These subcatogories (head, body, html) are spaces for HTML elements, most seen elements
+are contained within the body while things like css linking page name viewport image etc
+are contained in the head
+-->
 <head>
+    <!--
+    Stuff that always comes with the html file not to important for what we're doing rn
+    -->
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <link href="./uni.css" rel="stylesheet" >
+    <!--
+    What the page says in the taskbar we can change this and the icon next to it (the viewport)
+    whenever
+    -->
     <title>Cool CAS Games</title>
 </head>
 <body>
+
+    <!--
+    Page header html, I typically use id's if the page only uses the object once
+    Its probably better to use classes though ill explain why now
+    basically in css theres a hirearchy of style
+
+    3. first the element so for links writing a on the stylesheet
+    2. classes (which gameLink is) denoted with a . before the name in css
+    1. ids (which pageTitle and titleSeparator are) denoted with a # before the name in css
+
+    style is overturned if the style is higher on the hirearchy ie: id's outrank classes and the element
+    we can change these id's to be styles but it probably wont be a huge deal we'll see
+    -->
     <h1 id="pageTitle">Cool CAS Games</h1>
     <hr id="titleSeparator">
     
+    <!--
+    This is placed within a text element (<p> text here </p>) because it lets us use text align
+    which is way nicer than trying to do shenanigans with margins, though that is also an option
+    if we need to change it later
+    -->
     <p class="gameLink">
         (<a href="./pages/insertGameNameHere/gNH.html">insertGameNameHere</a>
         |
         <a href="./pages/insertGameNameHere2/gNH2.html">insertGameNameHere2</a>)
     </p>
     
+    <!--
+    This is also below the title but it's just those horizontal lines on the site we can 
+    replace this with images or whatever later but they work fine as placeholders
+    -->
     <hr id="titleSeparator">
+
+    <!--
+    Most of this stuff is repeated in the other HTML docs but i'll explain script and css linking there
+    its fairly simple stuff
+    -->
 
 </body>
 </html>
