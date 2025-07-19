@@ -40,6 +40,7 @@ and <canvas> lets you draw and do a bunch of stuff to it in javascript
 */
 #titleSeparator {
     width: 10%;
+    min-width: 280px;
 }
 
 /*
@@ -53,4 +54,22 @@ The rest of this doc is the same old stuff I allready discussed
 }
 .gameLink a {
     color: rgb(255, 20, 147);
+}
+
+/*
+General game canvas stuff, centers the canvas and gives default dimensions and color for adjustment. I would recommend
+overwriting the dimensions and color with an id
+*/
+.gameContainer {
+    width: 100%;
+/*This tells everything within the div container to align itself to the center*/
+    text-align: center;
+}
+.gameCanvas {
+    width: 400px;
+    height: 400px;
+    background-color: white;
+
+/*This tells the canvas to listen to the div's text-align*/
+    display: inline;
 }

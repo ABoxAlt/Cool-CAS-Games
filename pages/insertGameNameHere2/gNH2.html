@@ -10,11 +10,7 @@
     -->
     <link href="../../uni.css" rel="stylesheet" >
     <link href="./gNH2.css" rel="stylesheet" >
-    <!--
-    Similarly to how the CSS links just for Javascript files instead
-    there isn't much you would use a uni.js for but we can do that if it seems benificial
-    -->
-    <script src="./gNH2.js"></script>
+
     <title>Cool CAS Games - insertGameNameHere2</title>
 </head>
 <body>
@@ -26,6 +22,16 @@
     </p>
     
     <hr id="titleSeparator">
+    <!--
+    Similarly to how the CSS links just for Javascript files instead
+    there isn't much you would use a uni.js for but we can do that if it seems benificial
     
+    This CANNOT GO IN THE HEAD IT HAS TO GO IN THE BODY
+    I forget that a lot but it gives you an error and you just don't get to use the script
+    this is only really a problem when you need to nab html elements
+    this is because the head and body are separate containers and you cannot grab elements
+    from another container
+    -->
+    <script src="./gNH2.js"></script>
 </body>
 </html>

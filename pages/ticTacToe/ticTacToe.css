@@ -1,0 +1,4 @@
+/*Pushes the canvas down to look nice, unnecesary for the game itself and can be adjusted*/
+#ticTacToeGame {
+    margin-top: 10%;
+}
