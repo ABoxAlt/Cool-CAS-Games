@@ -66,8 +66,8 @@ overwriting the dimensions and color with an id
     text-align: center;
 }
 .gameCanvas {
-    width: 400px;
-    height: 400px;
+    min-width: 100px;
+    min-height: 100px;
     background-color: white;
 
 /*This tells the canvas to listen to the div's text-align*/
