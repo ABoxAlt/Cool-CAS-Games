@@ -13,13 +13,14 @@ const symbolSize = 50;
 
 let turn = 0;
 let win = false;
-const board = [[3, 3, 3], [3, 3, 3], [3, 3, 3]];
+let board = [[3, 3, 3], [3, 3, 3], [3, 3, 3]];
 
 //Outputs the mouse coordinates (based on the canvas not the webpage)
 function onMouseUp(e) {
     if (win) {
         win = false;
         gameStart();
+        return;
     }
 
     let x = parseInt(e.offsetX);
@@ -62,6 +63,7 @@ function onMouseUp(e) {
         turn --;
         board[((y/100))][((x/100))] = 1;
     }
+    checkWin();
 }
 
 function drawBoard() {
@@ -150,17 +152,48 @@ function drawWin(line) {
             ctx.moveTo(250, 20);
             ctx.lineTo(250, 280);
             break;
+        default:
+            console.log("Error invalid input");
     }
     ctx.stroke();
     ctx.restore();
 }
 
-function checkWin() {}
+function checkWin() {
+    if (!board[0].includes(3) && !board[1].includes(3) && !board[2].includes(3)) {
+        win = true;
+    }
+    if (board[0][0] == board[1][1] && board[1][1] == board[2][2] && board[0][0] != 3) {
+        drawWin(0);
+        win = true;
+    } else if (board[0][2] == board[1][1] && board[1][1] == board[2][0] && board[0][2] != 3) {
+        drawWin(1);
+        win = true;
+    } else if (board[0].every((x) => x == 0) || board[0].every((x) => x == 1)) {
+        drawWin(2);
+        win = true;
+    } else if (board[1].every((x) => x == 0) || board[1].every((x) => x == 1)) {
+        drawWin(3);
+        win = true;
+    } else if (board[2].every((x) => x == 0) || board[2].every((x) => x == 1)) {
+        drawWin(4);
+        win = true;
+    } else if (board[0][0] == board[1][0] && board[1][0] == board[2][0] && board[0][0] != 3) {
+        drawWin(5);
+        win = true;
+    } else if (board[0][1] == board[1][1] && board[1][1] == board[2][1] && board[0][1] != 3) {
+        drawWin(6);
+        win = true;
+    } else if (board[0][2] == board[1][2] && board[1][2] == board[2][2] && board[0][2] != 3) {
+        drawWin(7);
+        win = true;
+    }
+}
 
 function gameStart() {
+    board = [[3, 3, 3], [3, 3, 3], [3, 3, 3]];
     drawBoard();
     turn = 0;
 }
 
 gameStart();
-drawWin(2);
