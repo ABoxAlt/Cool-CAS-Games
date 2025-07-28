@@ -8,7 +8,7 @@ function getRandomInt(max) {
     return Math.floor(Math.random() * 3);
 }
 
+const label = document.getElementById("dinnerFact");
 function getFact() {
-    let label = document.getElementById("dinnerFact");
     label.textContent = "Dinner Fact: " + facts[getRandomInt(facts.max)];
 }
