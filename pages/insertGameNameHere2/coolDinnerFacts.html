@@ -9,12 +9,12 @@
     keep in mind that if the name of files change the href's to the pages need to be updated as well
     -->
     <link href="../../uni.css" rel="stylesheet" >
-    <link href="./gNH2.css" rel="stylesheet" >
+    <link href="./coolDinnerFacts.css" rel="stylesheet" >
 
-    <title>Cool CAS Games - insertGameNameHere2</title>
+    <title>Cool CAS Games - Cool Dinner Facts!</title>
 </head>
 <body>
-    <h1 id="pageTitle">insertGameNameHere2</h1>
+    <h1 id="pageTitle">Cool Dinner Facts</h1>
     <hr id="titleSeparator">
     
     <p class="gameLink">
@@ -32,6 +32,10 @@
     this is because the head and body are separate containers and you cannot grab elements
     from another container
     -->
-    <script src="./gNH2.js"></script>
+    <div class="gameContainer" id="coolDinnerFactsGame">
+        <p id="dinnerFact">Dinner Fact:</p>
+        <button id="dinnerBtn" onclick="getFact()">Get Fact!</button>
+    </div>
+    <script src="./coolDinnerFacts.js"></script>
 </body>
 </html>
