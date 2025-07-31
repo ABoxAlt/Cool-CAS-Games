@@ -1,0 +1,20 @@
+.siteLogo {
+    width:20%;
+    min-width: 225px;
+    min-height: 225px;
+    max-width: 300px;
+    max-height: 300px;
+    position: absolute;
+    top: 0px;
+}
+
+.siteLinks {
+    text-align: right;
+    margin-right: 10%;
+    font-size: 50px;
+    font-family:'Franklin Gothic Medium';
+    font-style: none;
+    word-spacing: 50px;
+    color: rgb(255, 20, 147);
+    
+}
