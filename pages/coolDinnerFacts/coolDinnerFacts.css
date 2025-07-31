@@ -1,5 +1,15 @@
+.coolLogo {
+    width:15%;
+    display: block;
+    margin: auto;
+    position: static;
+}
+
 #dinnerFact {
     text-align: center;
+    font-family:'Franklin Gothic Medium';
+    font-style: none;
+
 }
 
 #dinnerBtn {

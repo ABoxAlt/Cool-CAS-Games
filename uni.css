@@ -18,8 +18,8 @@ color sets most elements to that color
 there is no specific text-color option
 */
 body {
-    background-color: rgb(21, 21, 68);
-    color: rgb(220, 224, 255);
+    background-color: rgb(255, 222, 130);
+    color: rgb(0, 0, 0);
 }
 
 /*

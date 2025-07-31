@@ -1,4 +1,4 @@
-const facts = [
+let facts = [ // setting facts as "let", because const makes it so its unable to change it back
     "51 is divisible by 17 and 3.",
     "In 1492, Columbus sailed the ocean blue and discovered the Americas.",
     "The Doppler Effect describes the change in frequency of a wave when the observer or source or both of a wave are moving.",
@@ -19,6 +19,8 @@ const facts = [
     "In some cultures burping during dinner is a compliment"
 ]
 
+const recycle = facts; // this sets recycle as the same as facts 
+
 function getRandomInt(max) {
     return Math.floor(Math.random() * 3);
 }
@@ -26,13 +28,22 @@ function getRandomInt(max) {
 const label = document.getElementById("dinnerFact");
 function getFact() {
     let label = document.getElementById("dinnerFact");
-
+    playAudio();
     // All I did here Void was change the fact display code so the website wont display the same fact twice
     // you can still reload the site to see them again
     if (facts.length > 0) {
-        const fact = facts.splice(facts.indexOf(facts[getRandomInt(facts.max)]), 1);
+        let fact = facts.splice(facts.indexOf(facts[getRandomInt(facts.max)]), 1);
         label.textContent = "Dinner Fact: " + fact;
     } else {
-        label.textContent = "Dinner Fact: You've seen all the facts!";
+        // NEED WORK ON THIS (basically you set the facts array equal to the backup so, in theory, itll reset back to the original array)
+        facts = recycle;
+        
+        //label.textContent = "Dinner Fact: You've seen all the facts!";
     }
+}
+
+function playAudio() {
+    let x = new Audio("./splat.mp3");
+    x.volume = 0.2;
+    x.play();
 }
