@@ -1,4 +1,4 @@
-let facts = [ // setting facts as "let", because const makes it so its unable to change it back
+const facts = [ // use const since facts will always be the same array
     "51 is divisible by 17 and 3.",
     "In 1492, Columbus sailed the ocean blue and discovered the Americas.",
     "The Doppler Effect describes the change in frequency of a wave when the observer or source or both of a wave are moving.",
@@ -17,29 +17,42 @@ let facts = [ // setting facts as "let", because const makes it so its unable to
     "The caesar salad wasn’t created in italy rather in mexico",
     "Most wasabi isn’t real wasabi most times it’s died horseradish",
     "In some cultures burping during dinner is a compliment"
-]
+];
 
-const recycle = facts; // this sets recycle as the same as facts 
+// track which facts we've shown
+let pointer = 0;
+
+const label = document.getElementById("dinnerFact");
+function getFact() {
+    playAudio();
+
+    // ABox, I changed the code to pick all the facts and then shuffle the list
+    // then rinse and repeat. it won't show the same fact twice
+    let fact = facts[pointer];
+    label.textContent = "Dinner Fact: " + fact;
+
+    // increment to remember we've shown that fact already
+    pointer++;
+    // when we run out of facts, shuffle and show facts again
+    if (pointer >= facts.length) {
+        shuffle(facts);
+        pointer = 0;
+    }
+}
 
 // return an integer from 0 inclusive to max exclusive
 function getRandomInt(max) {
     return Math.floor(Math.random() * max);
 }
 
-const label = document.getElementById("dinnerFact");
-function getFact() {
-    let label = document.getElementById("dinnerFact");
-    playAudio();
-    // All I did here Void was change the fact display code so the website wont display the same fact twice
-    // you can still reload the site to see them again
-    if (facts.length > 0) {
-        let fact = facts.splice(facts.indexOf(facts[getRandomInt(facts.max)]), 1);
-        label.textContent = "Dinner Fact: " + fact;
-    } else {
-        // NEED WORK ON THIS (basically you set the facts array equal to the backup so, in theory, itll reset back to the original array)
-        facts = recycle;
-        
-        //label.textContent = "Dinner Fact: You've seen all the facts!";
+// randomize the order of an array in place using the fisher-yates algorithm
+function shuffle(arr) {
+    for (let i = 0; i < arr.length - 2; i++) {
+        // swap elements to randomize the order
+        let idx = getRandomInt(arr.length);
+        let temp = arr[idx];
+        arr[idx] = arr[i];
+        arr[i] = temp;
     }
 }
 
