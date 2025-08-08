@@ -28,6 +28,9 @@ function getFact() {
 
     // ABox, I changed the code to pick all the facts and then shuffle the list
     // then rinse and repeat. it won't show the same fact twice
+    // the other implementation didn't work since recycle was a shallow copy of
+    // facts, and since they referenced the same array once facts became empty
+    // so did recycle so facts tried to copy its own empty contents
     let fact = facts[pointer];
     label.textContent = "Dinner Fact: " + fact;
 
