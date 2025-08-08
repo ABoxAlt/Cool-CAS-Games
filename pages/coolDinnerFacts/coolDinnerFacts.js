@@ -22,6 +22,9 @@ const facts = [ // use const since facts will always be the same array
 // track which facts we've shown
 let pointer = 0;
 
+// pre-shuffle the array to ensure different facts every time
+window.onload = () => shuffle(facts);
+
 const label = document.getElementById("dinnerFact");
 function getFact() {
     playAudio();
