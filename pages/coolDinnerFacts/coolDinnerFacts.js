@@ -21,8 +21,9 @@ let facts = [ // setting facts as "let", because const makes it so its unable to
 
 const recycle = facts; // this sets recycle as the same as facts 
 
+// return an integer from 0 inclusive to max exclusive
 function getRandomInt(max) {
-    return Math.floor(Math.random() * 3);
+    return Math.floor(Math.random() * max);
 }
 
 const label = document.getElementById("dinnerFact");
