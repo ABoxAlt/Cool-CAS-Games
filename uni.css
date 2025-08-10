@@ -73,3 +73,7 @@ overwriting the dimensions and color with an id
 /*This tells the canvas to listen to the div's text-align*/
     display: inline;
 }
+
+.desc {
+    text-align: center;
+}
