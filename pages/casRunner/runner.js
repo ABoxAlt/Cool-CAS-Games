@@ -2,7 +2,7 @@ const canvas = document.querySelector(".gameCanvas");
 const ctx = canvas.getContext('2d');
 
 objColor = "rgb(48, 57, 138)";
-
+floorLevel = 300;
 
 
 class obstacle {
@@ -10,7 +10,7 @@ class obstacle {
         this.height = 50;
         this.width = width;
         this.x = canvas.width;
-        this.y = 100;
+        this.y = floorLevel;
     }
 
     drawRectangle() {
@@ -26,10 +26,10 @@ class playerClass {
         this.width = 50;
         this.height = 50;
         this.x = 0;
-        this.y = 100;
+        this.y = floorLevel;
         this.jump = 0;
-        this.jumpSpeed = 5;
-        this.airTime = 40;
+        this.maxJumpSpeed = 12
+        this.jumpSpeed = this.maxJumpSpeed;
     }
     
     drawPlayer() {
@@ -40,22 +40,26 @@ class playerClass {
     }
 
     checkJump() {
-        if (this.jump < this.airTime && this.jump > 0) {
-            console.log("jumping" + this.jump);
+        if (this.jump == 1) {
+            console.log("jumping " + this.jump);
             this.y -= this.jumpSpeed;
-            if (this.y <= 0) {
-                this.y = 0;
-                this.jump ++;
+            this.jumpSpeed -= .5;
+            if (this.y <= 0 || this.jumpSpeed <= 0) {
+                this.jump = 2;
+                this.jumpSpeed = 0;
             }
         
-        } else if (this.jump == this.airTime && this.y < 100) {
+        } else if (this.jump == 2 && this.y < floorLevel) {
+            console.log("falling " + this.jump);
             this.y += this.jumpSpeed;
-            if (this.y >= 100) {
-                this.y = 100;
+            this.jumpSpeed += .5;
+            if (this.y >= floorLevel) {
+                this.y = floorLevel;
+                this.jumpSpeed = this.maxJumpSpeed;
                 this.jump = 0;
             }
         } else {
-            console.log("no Jump");
+            //console.log("no Jump");
         }
     }
 }
@@ -63,10 +67,14 @@ class playerClass {
 const obstacles =[];
 const player = new playerClass();
 
+addEventListener("keydown", keyDown);
 addEventListener("keyup", keyUp);
 
 
-function keyUp(e) {
+function keyDown(e) {
+    if (player.jump != 0) {
+        return;
+    }
     switch (e.key) {
         case " ":
             player.jump = 1;
@@ -78,7 +86,28 @@ function keyUp(e) {
             player.jump = 1;
             break;
         default:
-            player.jump = 1;
+            break;
+    }
+}
+
+function keyUp(e) {
+    if (player.jump != 1) {
+        return;
+    }
+    switch (e.key) {
+        case " ":
+            player.jumpSpeed = 0;
+            player.jump = 2;
+            break;
+        case "w":
+            player.jumpSpeed = 0;
+            player.jump = 2;
+            break;
+        case "ArrowUp":
+            player.jumpSpeed = 0;
+            player.jump = 2;
+            break;
+        default:
             break;
     }
 }
@@ -107,8 +136,8 @@ function drawBackdrop() {
     ctx.strokeStyle = objColor;
     ctx.lineWidth = 4;
     ctx.beginPath();
-    ctx.moveTo(0, 152);
-    ctx.lineTo(canvas.width, 150);
+    ctx.moveTo(0, 352);
+    ctx.lineTo(canvas.width, 350);
     ctx.stroke();
     ctx.restore();
 }
