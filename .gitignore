@@ -1,0 +1,6 @@
+# void: i'm making this .gitignore to hide local files used for eslint which
+# don't need to be pushed and used by everyone
+node_modules/
+eslint.config.mjs
+package-lock.json
+package.json
