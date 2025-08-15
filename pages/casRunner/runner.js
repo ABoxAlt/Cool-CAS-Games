@@ -2,7 +2,7 @@ const canvas = document.querySelector(".gameCanvas");
 const ctx = canvas.getContext('2d');
 
 //objColor = "rgb(48, 57, 138)";
-floorLevel = 300;
+floorLevel = 350;
 
 
 class obstacle {
@@ -10,7 +10,8 @@ class obstacle {
         this.height = 50;
         this.width = width;
         this.x = canvas.width;
-        this.y = floorLevel;
+        this.x2 = this.x + this.width;
+        this.y = floorLevel - this.height;
         this.speed = 5;
         this.active = true;
         this.objColor = "rgba(160, 170, 255, 1)";
@@ -29,6 +30,7 @@ class obstacle {
         } else if (this.x <= 0 - this.width) {
             this.active = false;
         }
+        this.x2 = this.x + this.width;
     }
 }
 
@@ -37,7 +39,8 @@ class playerClass {
         this.width = 50;
         this.height = 50;
         this.x = 100;
-        this.y = floorLevel;
+        this.x2 = this.x + this.width;
+        this.y = floorLevel - this.height;
         this.jump = 0;
         this.maxJumpSpeed = 12
         this.jumpSpeed = this.maxJumpSpeed;
@@ -61,12 +64,12 @@ class playerClass {
                 this.jumpSpeed = 0;
             }
         
-        } else if (this.jump == 2 && this.y < floorLevel) {
+        } else if (this.jump == 2 && this.y < floorLevel - this.height) {
             //console.log("falling " + this.jump);
             this.y += this.jumpSpeed;
             this.jumpSpeed += .5;
-            if (this.y >= floorLevel) {
-                this.y = floorLevel;
+            if (this.y >= floorLevel - this.height) {
+                this.y = floorLevel - this.height;
                 this.jumpSpeed = this.maxJumpSpeed;
                 this.jump = 0;
             }
@@ -132,7 +135,7 @@ function spawnObstacle() {
         default:
             console.log("There was an error when spawning an object. obstacleType was : " + obstacleType);
     }
-    console.log("Debug: Spawned Obstacle");
+    //console.log("Debug: Spawned Obstacle");
 }
 
 function keyUp(e) {
@@ -176,6 +179,13 @@ function checkObstacles() {
     destroyObstacles();
     for (const ob of obstacles) {
         ob.moveObstacle();
+        console.log(player.y + player.height, floorLevel - ob.height);
+        if (player.y + player.height >= floorLevel - ob.height) {
+            if (ob.x >= player.x && ob.x <= player.x2 || ob.x2 >= player.x && ob.x2 <= player.x2 || player.x > ob.x && player.x < ob.x2) {
+                //console.log("collided with player");
+                player.playerColor = "white";
+            }
+        }
     }
 }
 
@@ -186,8 +196,8 @@ function drawBackdrop() {
     ctx.strokeStyle = "rgb(48, 57, 138)";
     ctx.lineWidth = 4;
     ctx.beginPath();
-    ctx.moveTo(0, 352);
-    ctx.lineTo(canvas.width, 350);
+    ctx.moveTo(0, floorLevel);
+    ctx.lineTo(canvas.width, floorLevel);
     ctx.stroke();
     ctx.restore();
 }
@@ -214,6 +224,7 @@ async function gameLoop() {
         checkObstacles();
 
         paint();
+        player.playerColor = "rgb(48, 57, 138)";
     }
 }
 
