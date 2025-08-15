@@ -3,7 +3,13 @@ const ctx = canvas.getContext('2d');
 
 //objColor = "rgb(48, 57, 138)";
 floorLevel = 350;
+floorLength = 200;
+gameStart = false;
+baseObstacleCount = 2000;
+maxObstacleCount = baseObstacleCount;
+obstacleCount = maxObstacleCount;
 
+score = 0;
 
 class obstacle {
     constructor(width) {
@@ -36,6 +42,7 @@ class obstacle {
 
 class playerClass {
     constructor() {
+        this.alive = true;
         this.width = 50;
         this.height = 50;
         this.x = 100;
@@ -79,7 +86,7 @@ class playerClass {
     }
 }
 
-const obstacles =[];
+let obstacles =[];
 
 function destroyObstacles() {
     for (const ob of obstacles) {
@@ -95,19 +102,49 @@ const player = new playerClass();
 addEventListener("keydown", keyDown);
 addEventListener("keyup", keyUp);
 
+function resetGame() {
+    gameStart = true;
+    player.y = floorLevel - player.height;
+    maxObstacleCount = baseObstacleCount;
+    obstacleCount = maxObstacleCount;
+    player.alive = true;
+    obstacles = [];
+    player.jump = 0;
+    score = 0;
+}
+
 function keyDown(e) {
-    if (player.jump != 0) {
+    if (!player.alive) {
+        switch (e.key) {
+        case " ":
+            resetGame();
+            break;
+        case "w":
+            resetGame();
+            break;
+        case "ArrowUp":
+            resetGame();
+            break;
+        default:
+            break;
+        }
         return;
-    }
+    }else if (player.jump != 0) {
+        return;
+    } 
+
     switch (e.key) {
         case " ":
             player.jump = 1;
+            gameStart = true;
             break;
         case "w":
             player.jump = 1;
+            gameStart = true;
             break;
         case "ArrowUp":
             player.jump = 1;
+            gameStart = true;
             break;
         case "e":
             spawnObstacle();
@@ -179,11 +216,13 @@ function checkObstacles() {
     destroyObstacles();
     for (const ob of obstacles) {
         ob.moveObstacle();
-        console.log(player.y + player.height, floorLevel - ob.height);
+        //console.log(player.y + player.height, floorLevel - ob.height);
         if (player.y + player.height >= floorLevel - ob.height) {
             if (ob.x >= player.x && ob.x <= player.x2 || ob.x2 >= player.x && ob.x2 <= player.x2 || player.x > ob.x && player.x < ob.x2) {
                 //console.log("collided with player");
-                player.playerColor = "white";
+                //player.playerColor = "white";
+                player.alive = false;
+                gameStart = false;
             }
         }
     }
@@ -197,7 +236,7 @@ function drawBackdrop() {
     ctx.lineWidth = 4;
     ctx.beginPath();
     ctx.moveTo(0, floorLevel);
-    ctx.lineTo(canvas.width, floorLevel);
+    ctx.lineTo(floorLength, floorLevel);
     ctx.stroke();
     ctx.restore();
 }
@@ -220,11 +259,33 @@ function paint() {
 async function gameLoop() {
     while (true) {
         await waitFor(10);
-        player.checkJump();
-        checkObstacles();
-
-        paint();
-        player.playerColor = "rgb(48, 57, 138)";
+        if (player.alive) {
+            if (gameStart) {
+                score ++;
+                console.log(score);
+            }
+            player.checkJump();
+            checkObstacles();
+            if (gameStart) {
+                floorLength += 15;
+                obstacleCount -= 10;
+                if (obstacleCount <= 0) {
+                    spawnObstacle();
+                    if (maxObstacleCount >= 100) {
+                        maxObstacleCount -= 10;
+                    }
+                    //console.log(maxObstacleCount);
+                    obstacleCount = maxObstacleCount;
+                }
+            }
+            paint();
+            player.playerColor = "rgb(48, 57, 138)";
+        } else {
+            ctx.save();
+            ctx.fillStyle = player.playerColor;
+            ctx.fillRect(320, 170, 40, 40);
+            ctx.restore();
+        }
     }
 }
 
