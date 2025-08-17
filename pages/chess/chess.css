@@ -1,4 +1,12 @@
 /*Pushes the canvas down to look nice, unnecesary for the game itself and can be adjusted*/
 #chessGame {
-    margin-top: 10%;
+    /* margin-top: 10%; */
+}
+
+#gameContainer {
+    /* TODO: add margin to top */
+}
+
+.label {
+    text-align: center;
 }
