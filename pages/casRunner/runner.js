@@ -1,4 +1,5 @@
 const canvas = document.querySelector(".gameCanvas");
+const scoreLabel = document.querySelector("#gameScore");
 const ctx = canvas.getContext('2d');
 
 //objColor = "rgb(48, 57, 138)";
@@ -20,7 +21,7 @@ class obstacle {
         this.y = floorLevel - this.height;
         this.speed = 5;
         this.active = true;
-        this.objColor = "rgba(160, 170, 255, 1)";
+        this.objColor = "rgb(48, 57, 138)";
     }
 
     drawObstacle() {
@@ -262,7 +263,7 @@ async function gameLoop() {
         if (player.alive) {
             if (gameStart) {
                 score ++;
-                console.log(score);
+                scoreLabel.textContent = "Score : " + score;
             }
             player.checkJump();
             checkObstacles();
