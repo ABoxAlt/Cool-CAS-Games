@@ -1,10 +1,29 @@
 /*Pushes the canvas down to look nice, unnecesary for the game itself and can be adjusted*/
 #chessGame {
     /* margin-top: 10%; */
+    /* display: flex; */
+    /* flex-direction: column; */
+    /* align-items: center; */
+    /* justify-content: center; */
+}
+.outsideCenteringContainer {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+.gameContainer {
+    /* TODO: add margin to top */
 }
 
-#gameContainer {
-    /* TODO: add margin to top */
+.buttonContainer {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.buttonContainer button {
+    flex: auto;
+    max-width: 200px;
 }
 
 .label {

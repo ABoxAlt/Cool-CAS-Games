@@ -21,10 +21,17 @@
     <!--xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx-->    
     <!--The div is here in order to format the canvas to the right spot-->
     <div class="gameContainer" id="chessGame">
-        <p class="label" id="turnLabel">0</p>
-        <p class="label" id="alertLabel">Alerts here!</p>
+        <p class="label" id="turnLabel">turnLabel</p>
+        <p class="label" id="alertLabel">alertLabel</p>
+
         <!--Game canvas-->
         <canvas class="gameCanvas" height="400px" width="400px"></canvas>
+
+        <!-- buttons -->
+        <div class="buttonContainer" id="chessButtons">
+            <button id="resignButton">Resign</button>
+            <button id="drawButton">Draw</button>
+        </div>
     </div>
     
     <script src="./chess.js"></script>
