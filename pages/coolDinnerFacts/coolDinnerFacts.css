@@ -13,5 +13,10 @@
 }
 
 #dinnerBtn {
-    
+    border: none;
+    background-color: inherit;
+}
+
+#factButton {
+    height: 200px;
 }
