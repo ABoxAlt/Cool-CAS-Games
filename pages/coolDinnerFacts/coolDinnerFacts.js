@@ -26,6 +26,17 @@ let pointer = 0;
 window.onload = () => shuffle(facts);
 
 const label = document.getElementById("dinnerFact");
+const buttonImg = document.getElementById("factButton");
+
+addEventListener("mousedown", md);
+addEventListener("mouseup", mu);
+function md() {
+    buttonImg.src = "../../images/buttonFact_Clicked.png";
+} 
+function mu() {
+    buttonImg.src = "../../images/buttonFact.png";
+}
+
 function getFact() {
     playAudio();
 
