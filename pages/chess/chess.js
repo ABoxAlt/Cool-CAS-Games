@@ -115,9 +115,10 @@ function onMouseUp(e) {
 
             // check for castle
             if (Object.hasOwn(response, "castle")) {
-                let dX = x - this.x;
+                let dX = x - selectedPiece.getX();
                 let directionX = dX > 0 ? 1 : -1;
                 for (let i = 1; i <= 2; i++) {
+                    console.log("Check: " + selectedPiece.checkCheck([selectedPiece.getX() + i * directionX, y]));
                     if (selectedPiece.checkCheck([selectedPiece.getX() + i * directionX, y])) {
                         return;
                     }
@@ -145,10 +146,12 @@ function onMouseUp(e) {
             // update board
             // check capture
             if (endPosPiece !== null) {
-                board[y][x] = null;
-                endPosPiece = null;
+                removePiece(x, y);
             }
             console.log(endPosPiece);
+
+            // remove from previous location
+            board[selectedPiece.getY()][selectedPiece.getX()] = null;
 
             // move 
             board[y][x] = selectedPiece;
@@ -336,11 +339,6 @@ function drawBoard() {
         }
     }
 
-    // TEST:  check img loaded
-    // for (const [filename, img] of Object.entries(CHESS_IMAGES)) {
-    //     console.log(`${filename}: ${img.complete && img.naturalWidth !== 0 ? "Success" : "Failure"}`);
-    // }
-
     // draw pieces
     // console.log(allPieces);
     allPieces.forEach(element => {
@@ -357,13 +355,14 @@ async function gameStart() {
 }
 
 function newGame() {
-    board = createBoard();
-
     // init vars
     turn = 0;
     turnIsBlack = false;
     state = GameState.SELECT;
     selectedPiece = null;
+    // clear array
+    allPieces.length = 0;
+    board = createBoard();
 
     // draw ui
     // console.log("drawBoard");
@@ -409,8 +408,15 @@ async function loadImages() {
             // })
         )
     );
-    console.log("resolved");
+    // console.log("resolved");
+    // testLoaded();
 }
+
+// function testLoaded() {
+//     for (const [filename, img] of Object.entries(CHESS_IMAGES)) {
+//         console.log(`${filename}: ${img.complete && img.naturalWidth !== 0 ? "Success" : "Failure"}`);
+//     }
+// }
 
 function createBoard() {
     let board = [];
@@ -470,15 +476,19 @@ function createBoard() {
         new Bishop(false, 2, 7), 
         new Queen(false, 3, 7), 
         new King(false, 4, 7), 
-        new Bishop(false, 5, 7), 
-        new Knight(false, 6, 7), 
+        null,
+        null,
+        // new Bishop(false, 5, 7), 
+        // new Knight(false, 6, 7), 
         new Rook(false, 7, 7)
     ];
 
+    let wBack1 = wBack.filter((_, index) => index != 5 && index != 6);
     board.push(wBack);
 
     // add all pieces to an array
-    let pieceRows = [bBack, /*bPawns,*/ wBack/*, wPawns*/];
+    // let pieceRows = [bBack, /*bPawns,*/ wBack/*, wPawns*/];
+    let pieceRows = [bBack, /*bPawns,*/ wBack1/*, wPawns*/];
     for (const row of pieceRows) {
         for (const piece of row) {
             allPieces.push(piece);
@@ -568,13 +578,20 @@ class Pawn extends Piece {
             return {isValid: true};
         // check for double
         } else if (!this.hasMoved && absY == 2) {
-            this.hasMoved = false;
-            return {isValid: true};
+            return {isValid: true, doubleMove: true};
         // check for en passant or capture
         } else if (absX == 1 && absY == 1) {
             return {isValid: true, capture: true};
         }
 
+        return {isValid: false};
+    }
+
+    move(x, y) {
+        if (!this.hasMoved) {
+            this.hasMoved = true;
+        }
+        super.move(x, y);
     }
 }
 
@@ -614,10 +631,14 @@ class Rook extends Piece {
             squares.push([xMoved ? i : x, yMoved ? i : y]);
         }
 
+        return {isValid: true, squares: squares};
+    }
+
+    move(x, y) {
         if (!this.hasMoved) {
             this.hasMoved = true;
         }
-        return {isValid: true, squares: squares};
+        super.move(x, y);
     }
 }
 
@@ -751,20 +772,22 @@ class King extends Piece {
             // let deltaX = dX > 0 ? 1 : -1;
             return {isValid: true, castle: true};
         }
+
+        return {isValid: false};
     }
 
     checkCheck(coords) {
         let x;
         let y;
-        if (Object.hasOwn(coords, "x")) {
+        if (coords.length === 2) {
+            x = coords[0];
+            y = coords[1];
+        } else {
             x = this.x;
             y = this.y;
-        } else {
-            x = coords.x;
-            y = coords.y;
         }
 
-        let signs = [-1, 1];
+        const signs = [-1, 1];
 
         // check diagonals
         let diagonalSquares = [];
@@ -772,12 +795,18 @@ class King extends Piece {
             let xSquare = x;
             let ySquare = y;
             for (const deltaX of signs) {
-                while (0 <= xSquare && xSquare <= 7 && 0 <= ySquare && ySquare <= 7) {
+                // no equals sign since we want it to iterate to 1 above the
+                // boundary and then add one more to be right on the boundary
+                while (0 < xSquare && xSquare < 7 && 0 < ySquare && ySquare < 7) {
                     xSquare += deltaX;
                     ySquare += deltaY;
 
                     diagonalSquares.push([xSquare, ySquare]);
                 }
+
+                // if (this.checkForChecker(diagonalSquares, ["bishop", "queen"])) {
+                //     return true;
+                // }
             }
         };
 
@@ -789,18 +818,18 @@ class King extends Piece {
         let orthogonalSquares = [];
         for (const deltaX of signs) {
             let xSquare = x;
-            while (0 <= xSquare && xSquare <= 7) {
+            while (0 < xSquare && xSquare < 7) {
                 xSquare += deltaX;
 
-                orthogonalSquares.push(xSquare, y);
+                orthogonalSquares.push([xSquare, y]);
             }
         }
         for (const deltaY of signs) {
             let ySquare = y;
-            while (0 <= ySquare && ySquare <= 7) {
+            while (0 < ySquare && ySquare < 7) {
                 ySquare += deltaY;
 
-                orthogonalSquares.push(x, ySquare);
+                orthogonalSquares.push([x, ySquare]);
             }
         }
 
@@ -815,11 +844,13 @@ class King extends Piece {
             for (const deltaX of signs) {
                 let xSquare = x + deltaX * lengths[0];
                 let ySquare = y + deltaY * lengths[1];
-                knightSquares.push(xSquare, ySquare);
+                if (0 < ySquare && ySquare < 7)
+                    knightSquares.push([xSquare, ySquare]);
 
                 xSquare = x + deltaX * lengths[1];
                 ySquare = y + deltaY * lengths[0];
-                knightSquares.push(xSquare, ySquare);
+                if (0 < ySquare && ySquare < 7)
+                    knightSquares.push([xSquare, ySquare]);
             }
         }
 
@@ -868,16 +899,56 @@ class King extends Piece {
     }
 
     checkForChecker(squares, pieces) {
+        // console.log("pieces " + pieces);
+        // console.log("squares " + squares);
         for (const s of squares) {
+            console.log(s[0] + ", " + s[1]);
+            let piece = board[s[0]][s[1]];
+
+            if (piece === null) {
+                continue;
+            }
+
+            if (piece.getIsBlack() === this.isBlack) {
+                return false;
+            }
+
+            let name = piece.getName();
+            for (const p of pieces) {
+                if (name === p) {
+                    console.log("piece " + p);
+                    console.log("square " + s);
+                    return true;
+                }
+            }
+
+            // else there's a piece of the opposite color that isn't able to
+            // check us so we return false
+            return false;
+        }
+        // else no checker found
+        return false;
+    }
+
+    checkForKnightChecker(squares) {
+        for (const s of squares) {
+            console.log(s[0] + ", " + s[1]);
             let piece = board[s[0]][s[1]];
             if (piece !== null) {
                 let name = piece.getName();
-                for (const p of pieces) {
-                    if (name == p) {
-                        return true;
-                    }
+                if (piece.getIsBlack() !== this.isBlack && name === "knight") {
+                    console.log("piece knight");
+                    console.log("square " + s);
+                    return true;
                 }
             }
         }
+    }
+
+    move(x, y) {
+        if (!this.hasMoved) {
+            this.hasMoved = true;
+        }
+        super.move(x, y);
     }
 }
