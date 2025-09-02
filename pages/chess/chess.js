@@ -132,17 +132,6 @@ function onMouseUp(e) {
 
             console.log("valid move");
 
-            // update the turns
-            if (turnIsBlack === true)
-                turn++;
-
-            // change whose turn it is
-            turnIsBlack = !turnIsBlack;
-
-            let turnStr = turn.toString();
-            let color = turnIsBlack ? "BLACK" : "WHITE";
-            turnLabel.textContent = `Turn ${turnStr}: ${color} to move!`;
-
             // update board
             // check capture
             if (endPosPiece !== null) {
@@ -157,12 +146,36 @@ function onMouseUp(e) {
             board[y][x] = selectedPiece;
             selectedPiece.move(x, y);
 
+            // move rook in case of castle
+            if (Object.hasOwn(response, "castle")) {
+                // calculate rook position based on whether the castle is
+                // kingside & the color of the player
+                let rookX = response.isKingside ? 7 : 0;
+                let rookY = turnIsBlack ? 0 : 7;
+
+                // get rook & remove
+                let rook = board[rookY][rookX];
+                board[rookY][rookX] = null;
+
+                // calculate new position & move
+                let rookNewX = response.isKingside ? 5 : 3;
+                board[rookY][rookNewX] = rook;
+                rook.move(rookNewX, rookY);
+            }
+
+            // update the turns
+            if (turnIsBlack === true)
+                turn++;
+
+            // change whose turn it is
+            turnIsBlack = !turnIsBlack;
+
+            let turnStr = turn.toString();
+            let color = turnIsBlack ? "BLACK" : "WHITE";
+            turnLabel.textContent = `Turn ${turnStr}: ${color} to move!`;
+
             drawBoard();
 
-            // if (checkWin()) {
-            //     alertLabel.textContent = "You won! Click the board to play again!";
-            //     state = GameState.END;
-            // }
             state = GameState.SELECT;
             break;
         }
@@ -769,8 +782,22 @@ class King extends Piece {
             return {isValid: true, king: true};
         // check for castle kingside
         } else if (!this.hasMoved && absY == 0 && absX == 2) {
-            // let deltaX = dX > 0 ? 1 : -1;
-            return {isValid: true, castle: true};
+            // create squares
+            let squares = [];
+            let direction = dX > 0 ? 1 : -1;
+
+            for (let i = this.x + direction; i != x; i += direction) {
+                squares.push([i, y]);
+            }
+
+            return {
+                isValid: true,
+                castle: true,
+                squares: squares,
+                // if castling kingside, the piece must move right, which is
+                // positive, so direction must be positive
+                isKingside: direction == 1 
+            };
         }
 
         return {isValid: false};
@@ -790,11 +817,11 @@ class King extends Piece {
         const signs = [-1, 1];
 
         // check diagonals
-        let diagonalSquares = [];
         for (const deltaY of signs) {
             let xSquare = x;
             let ySquare = y;
             for (const deltaX of signs) {
+                let diagonalSquares = [];
                 // no equals sign since we want it to iterate to 1 above the
                 // boundary and then add one more to be right on the boundary
                 while (0 < xSquare && xSquare < 7 && 0 < ySquare && ySquare < 7) {
@@ -804,37 +831,38 @@ class King extends Piece {
                     diagonalSquares.push([xSquare, ySquare]);
                 }
 
-                // if (this.checkForChecker(diagonalSquares, ["bishop", "queen"])) {
-                //     return true;
-                // }
+                if (this.checkForChecker(diagonalSquares, ["bishop", "queen"])) {
+                    return true;
+                }
             }
         };
 
-        if (this.checkForChecker(diagonalSquares, ["bishop", "queen"])) {
-            return true;
-        }
-
         // check horiz & vert
-        let orthogonalSquares = [];
         for (const deltaX of signs) {
             let xSquare = x;
+
+            let orthogonalSquares = [];
             while (0 < xSquare && xSquare < 7) {
                 xSquare += deltaX;
-
                 orthogonalSquares.push([xSquare, y]);
+            }
+
+            if (this.checkForChecker(orthogonalSquares, ["bishop", "queen"])) {
+                return true;
             }
         }
         for (const deltaY of signs) {
             let ySquare = y;
+            
+            let orthogonalSquares = [];
             while (0 < ySquare && ySquare < 7) {
                 ySquare += deltaY;
-
                 orthogonalSquares.push([x, ySquare]);
             }
-        }
 
-        if (this.checkForChecker(orthogonalSquares, ["rook", "queen"])) {
-            return true;
+            if (this.checkForChecker(orthogonalSquares, ["bishop", "queen"])) {
+                return true;
+            }
         }
 
         // check for (roaring) knight
@@ -844,17 +872,17 @@ class King extends Piece {
             for (const deltaX of signs) {
                 let xSquare = x + deltaX * lengths[0];
                 let ySquare = y + deltaY * lengths[1];
-                if (0 < ySquare && ySquare < 7)
+                if (0 < ySquare && ySquare < 7 && 0 < xSquare && xSquare < 7)
                     knightSquares.push([xSquare, ySquare]);
 
                 xSquare = x + deltaX * lengths[1];
                 ySquare = y + deltaY * lengths[0];
-                if (0 < ySquare && ySquare < 7)
+                if (0 < ySquare && ySquare < 7 && 0 < xSquare && xSquare < 7)
                     knightSquares.push([xSquare, ySquare]);
             }
         }
 
-        if (this.checkForChecker(knightSquares, ["knight"])) {
+        if (this.checkForJumpingChecker(knightSquares, "knight")) {
             return true;
         }
 
@@ -874,7 +902,7 @@ class King extends Piece {
             }
         }
 
-        if (this.checkForChecker(kingSquares, ["king"])) {
+        if (this.checkForJumpingChecker(kingSquares, "king")) {
             return true;
         }
 
@@ -890,7 +918,7 @@ class King extends Piece {
             }
         }
 
-        if (this.checkForChecker(pawnSquares, ["pawn"])) {
+        if (this.checkForJumpingChecker(pawnSquares, "pawn")) {
             return true;
         }
 
@@ -930,14 +958,14 @@ class King extends Piece {
         return false;
     }
 
-    checkForKnightChecker(squares) {
+    checkForJumpingChecker(squares, checkerName) {
         for (const s of squares) {
             console.log(s[0] + ", " + s[1]);
             let piece = board[s[0]][s[1]];
             if (piece !== null) {
                 let name = piece.getName();
-                if (piece.getIsBlack() !== this.isBlack && name === "knight") {
-                    console.log("piece knight");
+                if (piece.getIsBlack() !== this.isBlack && name === checkerName) {
+                    console.log("piece " + checkerName);
                     console.log("square " + s);
                     return true;
                 }
